@@ -5,8 +5,8 @@
 package sessions
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 // NewSessionStore should return a pointer to a SessionStore
@@ -79,7 +79,6 @@ func TestUsage(t *testing.T) {
 	ss := NewSessionStore()
 	s := ss.NewSession()
 
-
 	// Test Storage
 	s.SetVar("boo", "hello")
 	s.SetVar("int", 982)
@@ -92,7 +91,6 @@ func TestUsage(t *testing.T) {
 		t.Error("Variable 'int' not set correctly")
 	}
 
-
 	// Test Session Retrieval
 	ns := ss.GetSession(s.ID)
 
@@ -103,7 +101,6 @@ func TestUsage(t *testing.T) {
 	if ns.GetVar("int") != s.GetVar("int") {
 		t.Error("Session was not retrieved correctly: variable 'int' does not match")
 	}
-
 
 	// Test Variable Destruction
 	ns.DestroyVar("boo")
@@ -116,14 +113,12 @@ func TestUsage(t *testing.T) {
 		t.Error("Variable was not destroyed: variable 'boo' available in s")
 	}
 
-
 	// Test Variable Updates (uses pointers not duplicates)
 	ns.SetVar("int", 203)
 
 	if s.GetVar("int") != ns.GetVar("int") {
 		t.Error("SessionStore is not using pointers: Variable updates not visible to all SessionStore instances")
 	}
-
 
 	// Test Session Destruction
 	ss.DestroySession(ns.ID)
@@ -133,13 +128,13 @@ func TestUsage(t *testing.T) {
 	// when DestroySession is called.
 	//
 	/*
-	if ns.GetVar("int") != nil {
-		t.Error("Session was not destroyed: variable 'int' available in ns")
-	}
+		if ns.GetVar("int") != nil {
+			t.Error("Session was not destroyed: variable 'int' available in ns")
+		}
 
-	if s.GetVar("int") != nil {
-		t.Error("Session was not destroyed: variable 'int' available in s")
-	}
+		if s.GetVar("int") != nil {
+			t.Error("Session was not destroyed: variable 'int' available in s")
+		}
 	*/
 	_, ok := ss.Sessions[s.ID]
 
