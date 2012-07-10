@@ -37,6 +37,6 @@ func main() {
 
 	// Destroy the Session
 	ss.DestroySession(ns.ID)
-	fmt.Println(ns.GetVar("boo")) // <nil>
-	fmt.Println(s.GetVar("boo"))  // <nil>
+	fmt.Println(ns.GetVar("int")) // <nil>
+	fmt.Println(s.GetVar("int"))  // <nil>
 }
