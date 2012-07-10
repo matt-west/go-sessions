@@ -10,7 +10,7 @@ import (
 )
 
 // Create a new session store
-// (do this once when your server starts up)
+// (do this once, when your server starts up)
 var ss = sessions.NewSessionStore()
 
 func main() {
@@ -38,5 +38,5 @@ func main() {
 	// Destroy the Session
 	ss.DestroySession(ns.ID)
 	fmt.Println(ns.GetVar("boo")) // <nil>
-	fmt.Println(s.GetVar("boo")) // <nil>
+	fmt.Println(s.GetVar("boo"))  // <nil>
 }
