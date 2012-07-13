@@ -4,6 +4,14 @@
 
 package sessions
 
+import (
+	"crypto/rand"
+	"encoding/hex"
+	"fmt"
+	"net/http"
+	"reflect"
+)
+
 type SessionStore struct {
 	Sessions map[string]*Session
 	File     string
@@ -17,19 +25,48 @@ func NewSessionStore() (ss *SessionStore) {
 }
 
 // Returns a new Session
-func (ss *SessionStore) NewSession() (s *Session) {
-	id := ss.generate_id()
+func (ss *SessionStore) NewSession(w http.ResponseWriter) (s *Session) {
+	id, _ := ss.generate_id()
 
 	ns := Session{id, make(map[string]interface{}), "secret", 01234567} // TODO
 	ss.Sessions[id] = &ns
+
+	// Need to Set a Cookie Here that stores the session ID on the client
+	cookie := http.Cookie{
+		Name:  "sid",
+		Value: id,
+	}
+
+	http.SetCookie(w, &cookie)
 
 	s = &ns
 	return
 }
 
 // Returns an Session
-func (ss *SessionStore) GetSession(id string) (s *Session) {
-	s = ss.Sessions[id]
+func (ss *SessionStore) GetSession(w http.ResponseWriter, r *http.Request) (s *Session) {
+	// Get Cookie
+	cookie, err := r.Cookie("sid")
+
+	if err == nil {
+		// Check that the Cookie can be found
+		if reflect.TypeOf(cookie) != reflect.TypeOf(http.ErrNoCookie) {
+			// Check that the session still exists on the server side,
+			// otherwise create a new one
+			_, ok := ss.Sessions[cookie.Value]
+
+			if ok {
+				s = ss.Sessions[cookie.Value]
+			} else {
+				s = ss.NewSession(w)
+			}
+		} else {
+			s = ss.NewSession(w)
+		}
+	} else {
+		s = ss.NewSession(w)
+	}
+
 	return
 }
 
@@ -40,8 +77,17 @@ func (ss *SessionStore) DestroySession(id string) {
 }
 
 // Generate a Unique Session ID
-func (ss SessionStore) generate_id() (id string) {
-	// TODO
-	id = "8372592738"
-	return
+func (ss SessionStore) generate_id() (string, error) {
+	// Following code from: http://www.ashishbanerjee.com/home/go/go-generate-uuid
+	uuid := make([]byte, 16)
+	n, err := rand.Read(uuid)
+	if n != len(uuid) || err != nil {
+		return "", err
+	}
+
+	// TODO: verify the two lines implement RFC 4122 correctly
+	uuid[8] = 0x80 // variant bits see page 5
+	uuid[4] = 0x40 // version 4 Pseudo Random, see page 7
+
+	return hex.EncodeToString(uuid), nil
 }
