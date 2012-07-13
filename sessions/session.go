@@ -12,5 +12,5 @@ type Session struct {
 	ID      string
 	Values  map[string]interface{}
 	Secret  string
-	Expires time.Time // Unix Timestamp
+	Expires time.Time
 }
