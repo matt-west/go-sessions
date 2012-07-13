@@ -51,5 +51,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// Get Session will either return a current session or create a new one.
 	s := ss.GetSession(w, r)
 
-	s.SetVar("foo", "bar")
+	s.Values["foo"] = "bar"
 }

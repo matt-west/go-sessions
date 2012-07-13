@@ -10,21 +10,3 @@ type Session struct {
 	Secret  string
 	Expires int // Unix Timestamp
 }
-
-// Retrieves a Session Variable
-func (s Session) GetVar(key string) (v interface{}) {
-	v = s.Values[key]
-	return
-}
-
-// Sets a Session Variable
-func (s Session) SetVar(key string, value interface{}) {
-	s.Values[key] = value
-	return
-}
-
-// Destroys a Session Variable
-func (s Session) DestroyVar(key string) {
-	delete(s.Values, key)
-	return
-}

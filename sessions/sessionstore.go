@@ -31,6 +31,7 @@ func (ss *SessionStore) NewSession(w http.ResponseWriter) (s *Session) {
 	ss.Sessions[id] = &ns
 
 	// Need to Set a Cookie Here that stores the session ID on the client
+	// TODO: Put more info in this cookie, at the moment it is just a PoC
 	cookie := http.Cookie{
 		Name:  "sid",
 		Value: id,
@@ -87,4 +88,14 @@ func (ss SessionStore) generate_id() (string, error) {
 	uuid[4] = 0x40 // version 4 Pseudo Random, see page 7
 
 	return hex.EncodeToString(uuid), nil
+}
+
+// TODO: Save the SessionStore to a File
+func Save(filename string) error {
+	return nil
+}
+
+// TODO: Load a SessionStore from a File
+func Load(filename string) error {
+	return nil
 }
