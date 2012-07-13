@@ -7,7 +7,6 @@ package sessions
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"fmt"
 	"net/http"
 	"reflect"
 )
@@ -45,25 +44,23 @@ func (ss *SessionStore) NewSession(w http.ResponseWriter) (s *Session) {
 
 // Returns an Session
 func (ss *SessionStore) GetSession(w http.ResponseWriter, r *http.Request) (s *Session) {
-	// Get Cookie
+	// Try and Retrieve a Session First
 	cookie, err := r.Cookie("sid")
 
 	if err == nil {
 		// Check that the Cookie can be found
 		if reflect.TypeOf(cookie) != reflect.TypeOf(http.ErrNoCookie) {
-			// Check that the session still exists on the server side,
-			// otherwise create a new one
+			// Check that the session still exists on the server side
 			_, ok := ss.Sessions[cookie.Value]
 
 			if ok {
 				s = ss.Sessions[cookie.Value]
-			} else {
-				s = ss.NewSession(w)
 			}
-		} else {
-			s = ss.NewSession(w)
 		}
-	} else {
+	}
+
+	// If no Session, create a new one.
+	if s == nil {
 		s = ss.NewSession(w)
 	}
 
