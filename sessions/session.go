@@ -4,9 +4,13 @@
 
 package sessions
 
+import (
+	"time"
+)
+
 type Session struct {
 	ID      string
 	Values  map[string]interface{}
 	Secret  string
-	Expires int // Unix Timestamp
+	Expires time.Time // Unix Timestamp
 }

@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"reflect"
+	"time"
 )
 
 type SessionStore struct {
@@ -27,7 +28,7 @@ func NewSessionStore() (ss *SessionStore) {
 func (ss *SessionStore) NewSession(w http.ResponseWriter) (s *Session) {
 	id, _ := ss.generate_id()
 
-	ns := Session{id, make(map[string]interface{}), "secret", 01234567} // TODO
+	ns := Session{id, make(map[string]interface{}), "secret", time.Now()} // TODO
 	ss.Sessions[id] = &ns
 
 	// Need to Set a Cookie Here that stores the session ID on the client
